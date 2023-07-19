@@ -1,22 +1,20 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from math import sqrt
-import random
 import numpy as np
-import sounddevice as sd
 import scipy.io.wavfile as wavfile
 
-def listToString(s):
-    str1 = ""
-    for ele in s:
-        str1 += ele
-    return str1
+def listToString(input_list):
+    output_str = ''
+    for i in input_list:
+        output_str += i
+    return output_str
 
 def decode_binary_string(s):
     return ''.join(chr(int(s[i*8:i*8+8],2)) for i in range(len(s)//8))
 
 t = np.linspace(0,1,100)  # Time
-tb = 1;
+tb = 1;     # time bit
 fc = 1;    # carrier frequency
 
 c1 = sqrt(2/tb)*np.cos(2*np.pi*fc*t)  # carrier frequency cosine wave
@@ -42,7 +40,7 @@ m = []
 t1 = 0;
 t2 = tb;
 
-input = 'Le Phuc Lai - 20207987'
+input = 'Le Phuc Lai 20207987'
 text_to_bin = ''.join(format(ord(i), '08b') for i in input) #text in put to binary
 length = len(text_to_bin)
 m = np.array(list(text_to_bin), dtype = int) #convert binary string to numpy array
@@ -59,14 +57,12 @@ for i in range(0,length - 1,2):
         m_s = np.ones((1,len(t)))
     else:
         m_s = (-1)*np.ones((1,len(t)))
-
     odd_sig[i,:] = c1*m_s
 
     if (m[i+1] == 1):
         m_s = np.ones((1,len(t)))
     else:
         m_s = (-1)*np.ones((1,len(t)))
-
     even_sig[i,:] = c2*m_s
 
     qpsk = odd_sig + even_sig   # modulated wave = oddbits + evenbits
@@ -141,7 +137,7 @@ for i in range(0,length - 1,1):
     t2 = t2 + (tb+0.01)
 
 fig, ax6 = plt.subplots()
-ax6.stem(range(length), demod,use_line_collection=True)
+ax6.stem(range(length), demod, use_line_collection=True)
 ax6.grid()
 ax6.set_ylabel('16 bits data')
 plt.title('Demodulated signal')
